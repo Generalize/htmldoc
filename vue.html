@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Document</title>
+    <meta name="referrer" content="no-referrer"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/4.2.4/vue-router.global.prod.min.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<div id="app">
+    <router-link to="/">root</router-link>
+    <router-link to="/about">about</router-link>
+    <aaa></aaa>
+    <router-view/>
+</div>
+<script>
+    const start = async () => {
+        const routes = [
+            {
+                path: '/',
+                component: Vue.defineComponent({
+                    setup() {
+                    },
+                    async mounted() {
+                        const $this = Vue.getCurrentInstance();
+                        console.log($this.refs.v)
+                    },
+                    template: `
+                      <span ref="v">root</span>
+                      <router-link to="/">root</router-link>
+                      <router-link to="/about">about</router-link>`
+                })
+            },
+            {
+                path: '/about',
+                component:{
+                    template: `<span>about.js</span>
+                    <router-link to="/">root</router-link>
+                    <router-link to="/about">about</router-link>`,
+                    async setup() {
+                        alert('about.js');
+                    },
+                    async mounted(){}
+                }
+            },
+        ]
+        console.log(routes);
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes
+        })
+
+        const app = Vue.createApp({});
+        app.component('aaa', {
+            template: `<span>app</span>`,
+            setup() {
+            }
+        });
+
+        app.use(router);
+        app.mount('#app')
+    };
+
+    if (document.readyState === 'complete') {
+        start();
+    } else {
+        window.onload = () => {
+            start();
+        };
+    }
+</script>
+</body>
+</html>
+
